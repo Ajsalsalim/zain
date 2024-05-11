@@ -22,7 +22,7 @@ const productpageload = async(req,res)=>{
       
 
       
-        res.render("product",{currentpage:"product",categories:categories,products:products,categoryname,productbrands}) 
+        res.render("Product",{currentpage:"product",categories:categories,products:products,categoryname,productbrands}) 
    
 }  
 const productbrands = async(req,res)=>{
