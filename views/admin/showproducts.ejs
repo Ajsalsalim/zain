@@ -1,0 +1,630 @@
+
+
+
+
+<%- include("../layout/adminheader.ejs") %>
+    <%- include("../layout/bars.ejs") %>
+    <style>
+              /* Define the default styles for card titles */
+                    .card-title {
+          max-height: 3.6rem; /* Adjust this value as needed */
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        /* Media query for screens below 500px width */
+        @media screen and (max-width: 500px) {
+            /* Reduce font size of card titles */
+            .card-title {
+                font-size: 1rem; /* Small font size for smaller screens */
+            }
+        }
+
+      
+      .loader {
+      border: 16px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 16px solid #040404;
+      width: 25px;
+      height: 25px;
+      animation: spin 2s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    </style>
+    <style>
+      .dropdown {
+          position: relative;
+          display: inline;
+          
+       
+      }
+  
+      .dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #088178;
+          min-width: 200px;
+          overflow-y: auto;
+          max-height: 400px;
+          border: 1px solid #ddd;
+          z-index: 1;
+      }
+  
+      .dropdown-content label {
+          display: block;
+          padding: 5px 10px;
+          cursor: pointer;
+          border-radius: 5px;
+      }
+  
+      .dropdown-content label:hover {
+          background-color: #ddd;
+      }
+  
+      .show {
+          display: block;
+      }
+  
+      .selected-items {
+      display: flex;
+      max-width: 440px;
+      margin-top: 5px;
+      border-radius: 7px;
+      border: 1px solid #ccc;
+      overflow-x: auto;
+      color:white;
+      background-color: #088178;
+      justify-content: flex-start; /* Adjust justify-content property */
+      flex-wrap: wrap; /* Allow items to wrap */
+      gap: 5px; /* Add space between items */
+  }
+  
+      .selected-items div {
+          margin-bottom: 5px;
+      }
+  </style>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-nav col-11 ">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <ul class="nav position-relative">
+                  
+                    
+                        <div style="margin-top: 41px"  class="dropdown-menu position-absolute top-100 translate-middle " >
+                          
+                            <a class="dropdown-item text-muted" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            
+                        </div>            
+    
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/assets/imgs/items/13.avif" alt="User"></a>
+                       
+                        
+                </ul>
+            </div>
+        </header>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Product list</h2>
+                    <p>Here you can see the added products</p>
+                </div>
+                <div>
+                    <!-- <a href="#" class="btn btn-light rounded font-md">Export</a> --> 
+                    <!-- <a href="#" class="btn btn-light rounded  font-md">Import</a> -->
+                    <a href="/admin/addproduct" class="btn btn-primary rounded">Add new</a>
+                </div>
+               
+            </div>
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row">
+                        <form >
+                            <div class="input-group">
+                                <input value="<%=searchterm%>"  list="search_terms" type="text" class="form-control" placeholder="Search product name" name="search" id="search" required>
+                                <input class="btn btn-primary" type="submit" value="search"> 
+                            </div>
+                           
+                        </form>
+                       
+                        <div class="col-lg-2 col-6 col-md-6">
+                          <form action="/admin/showproduct" method="get" class="d-flex">
+                            <select value="category" id="categoryfilter" style="width: 300px;" name="categoryfilter" class="form-select" me-2 >
+                              <option value="all" <%= category === 'all' ? 'selected' : '' %>>All Categories</option>
+                              <% for(let i=0;i<categories.length; i++){ %>
+                                <option value="<%= categories[i].name %>" <%= categories[i].name === category ? 'selected' : '' %>><%= categories[i].name %></option>
+                                <% } %>
+                                <input class="btn btn-primary" type="submit" value="Filter"> 
+                            </select>
+                          </form>
+                          
+
+                        </div>
+                        
+                       
+                    </div>
+                </header> <!-- card-header end// -->
+             
+                <div  class="card-body">
+                  <div class="row">
+                            
+                  <% if(products.length>0){
+                  for(let i=0;i<products.length;i++){ %>
+                      
+                      <div class="col-md-6 col-lg-3 col-12">
+                          <div  class="card card-product-grid ">
+                            
+                              
+                              
+                            <img style="width: 22rem; height: 16rem; max-height: 14rem;" class="img-fluid card-img-top" src="<%= products[i].image %>" alt="productimage">
+
+                                
+                    
+
+                                <div class="info-wrap">
+                                  <h5 class="card-title"><%= products[i].name %></h5>
+                                  <div style="display: flex; justify-content: space-between;">
+                                      <h6><%= products[i].category %></h6>
+                                      <h6><%= products[i].region %></h6>
+                                  </div>
+                                  <div style="display: flex; justify-content: left; margin-top: 15px;">
+                                    <h6>brands:</h6>
+                                    <div class="brand-list" style="max-height: 30px; width: 100px; overflow-y: auto; margin-top: -5px; margin-left: 15px;">
+                                      <% products[i].brand.forEach(brand => { %>
+                                          <div><%= brand %></div>
+                                      <% }) %>
+                                  </div>
+                                </div>
+                                  
+                                
+                                
+                              </div>
+                              
+                            
+                                                
+                                                
+                            <div style="display: flex; justify-content: space-between;">
+                                <a  data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openEditModal('<%= products[i].name %>','<%=products[i].description %>','<%=products[i]._id %>','<%=products[i].category%>','<%=products[i].region%>','<%= products[i].brand%>',' <%= category%>','<%= searchterm%>')" class="btn btn-primary btn-sm-edit font-sm btn-brand rounded">
+                                    <i class="material-icons md-edit"></i> Edit
+                                </a>
+                                <a  data-id="<%= products[i]._id %>" class=" btn btn-primary btn-sm-delete font-sm rounded btn-brand delete-category-btn">
+                                    <i  class="material-icons md-delete_forever"></i> Delete
+                                </a>
+
+                            </div>
+                        </div>   
+                        
+                    </div>
+                            <%}
+
+                        } else{ %>
+                            <h3 style=" margin-top:50px;display:flex;justify-content: center;align-items: center;">products not found </h3>
+                       <% }  %>
+                      
+                            
+                        
+                        
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+            
+          
+
+            <!--Modal starts-->
+            <div class="modal fade  modal-dialogue-centered" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialogue-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Edit category</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form id="myForm" action="/admin/editproduct?currentpage=<%=currentpage%>&&categoryfilter=<%=category%>&&search=<%=searchterm%>" method="post" enctype="multipart/form-data">
+                    <input type="hidden" class="form-control" name="productid" id="productid" >
+                    <input type="hidden" class="form-control" name="categoryfilter" id="categoryfilter" >
+                    <input value="<%=currentpage%>" type="hidden" class="form-control" name="currentpage" id="currentpage" >  
+                    <div class="mb-4">
+                      <label for="recipient-name" class="form-label">Name</label>
+                      <input type="text" class="form-control" name="productname" id="productname">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label"></label>
+                        <textarea id="description" name="description" type="text" placeholder="Type here" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-4">
+                                <label class="form-label"> category</label>
+                                <select name="category" class="form-select" id="categorySelect">
+                               <% for(let i=0;i<categories.length;i++){ %>
+                                   
+                                    <option value="<%=categories[i].name %>" ><%= categories[i].name %> </option>
+                                    <%}%>
+                                    </select>
+                                
+                              
+                                
+                            </div>
+                            <div style="display: flex; justify-content: space-between;" class="mb-4">
+                              <label class="form-label">Product Brand</label>
+                              <div class="dropdown">
+                                  <button style="border-radius: 7px; margin-right: 39px;" onclick="toggleDropdown(event)">Add New</button>
+                                  
+                                  <div id="options"  class="dropdown-content">
+                                      <label><input type="checkbox" value="tata"> TATA</label>
+                                      <label><input type="checkbox" value="appolo"> APPOLO</label>
+                                      <label><input type="checkbox" value="mark"> MARK</label>
+                                      <label><input type="checkbox" value="rks"> RKS</label>
+                                      <label><input type="checkbox" value="jsw"> JSW</label>
+                                      <label><input type="checkbox" value="georoof"> GEOROOF</label>
+                                      <label><input type="checkbox" value="oxy"> OXY</label>
+                                      <label><input type="checkbox" value="oraliumroofingsheet"> ORALIUM ROOFING SHEET</label>
+                                      <label><input type="checkbox" value="jindal"> JINDAL</label>
+                                      <label><input type="checkbox" value="aquastar"> AQUA STAR</label>
+                                      <label><input type="checkbox" value="euroguard"> EURO GUARD</label>
+                                      <label><input type="checkbox" value="vizag"> VIZAG</label>
+                                      <label><input type="checkbox" value="agni"> AGNI</label>
+                                      <label><input type="checkbox" value="kairali"> KAIRALI</label>
+                                      <label><input type="checkbox" value="metcon"> METCON</label>
+                                      <label><input type="checkbox" value="kenza"> KENZA</label>
+                                      <label><input type="checkbox" value="saibaba"> SAIBABA</label>
+                                      <label><input type="checkbox" value="cri"> CRI</label>
+                                      <label><input type="checkbox" value="crompton"> CROMPTON</label>
+                                      <label><input type="checkbox" value="kera"> KERA</label>
+                                      <label><input type="checkbox" value="krilosker"> KIRLOSKER</label>
+                                      <label><input type="checkbox" value="vguard"> V GUARD</label>
+                                      <label><input type="checkbox" value="frink"> FRINK</label>
+                                      <label><input type="checkbox" value="multisink"> MULTI SINK</label>
+                                      <label><input type="checkbox" value="prince"> PRINCE</label>
+                                      <label><input type="checkbox" value="mikitha"> MIKITHA</label>
+                                      <label><input type="checkbox" value="hitachi"> HITACHI</label>
+                                      <label><input type="checkbox" value="goldenbullet"> GOLDEN BULLET</label>
+                                      <label><input type="checkbox" value="bosch"> BOSCH</label>
+                                      <label><input type="checkbox" value="ferm"> FERM</label>
+                                      <label><input type="checkbox" value="dewalt"> DEWALT</label>
+                                      <label><input type="checkbox" value="asian"> ASIAN</label>
+                                      <label><input type="checkbox" value="indigo"> INDIGO</label>
+                                      <label><input type="checkbox" value="dulux"> DULUX</label>
+                                      <label><input type="checkbox" value="esdee"> ESDEE</label>
+                                      <label><input type="checkbox" value="amcos"> AMCOS</label>
+                                      <label><input type="checkbox" value="sheenlac"> SHEENLAC</label>
+                                      <label><input type="checkbox" value="century"> CENTURY</label>
+                                      <label><input type="checkbox" value="actiontesa"> ACTION TESA</label>
+                                      <label><input type="checkbox" value="greenply"> GREEN PLY</label>
+                                      <label><input type="checkbox" value="vanm"> VANM</label>
+                                      <label><input type="checkbox" value="thompsonply"> THOMPSON PLY</label>
+                                      <label><input type="checkbox" value="bestwood"> BEST WOOD</label>
+                                      <label><input type="checkbox" value="spider"> SPIDER</label>
+                                      <label><input type="checkbox" value="veneerply"> VENEER PLY</label>
+                                      <label><input type="checkbox" value="legrant"> LEGRANT</label>
+                                      <label><input type="checkbox" value="gm"> GM</label>
+                                      <label><input type="checkbox" value="elleys"> ELLEYS</label>
+                                      <label><input type="checkbox" value="polycab"> POLYCAB</label>
+                                      <label><input type="checkbox" value="havells"> HAVELLS</label>
+                                      <label><input type="checkbox" value="phinolex"> PHINOLEX</label>
+                                      <label><input type="checkbox" value="bajaj"> BAJAJ</label>
+                                      <label><input type="checkbox" value="surya"> SURYA</label>
+                                      <label><input type="checkbox" value="syska"> SYSKA</label>
+                                      <label><input type="checkbox" value="wipro"> WIPRO</label>
+                                      <label><input type="checkbox" value="osram"> OSRAM</label>
+                                      <label><input type="checkbox" value="philips"> PHILIPS</label>
+                                      <label><input type="checkbox" value="astral"> ASTRAL</label>
+                                      <label><input type="checkbox" value="supreme"> SUPREME</label>
+                                      <label><input type="checkbox" value="balco"> BALCO</label>
+                                      <label><input type="checkbox" value="hycount"> HYCOUNT</label>
+                                      <label><input type="checkbox" value="aquatech"> AQUATECH</label>
+                                      <label><input type="checkbox" value="goodwill"> GOODWILL</label>
+                                      <label><input type="checkbox" value="kelachandra"> KELACHANDRA</label>
+                                      <label><input type="checkbox" value="oceanpolymers"> OCEAN POLYMERS</label>
+                                      <label><input type="checkbox" value="jhonson"> JHONSON</label>
+                                      <label><input type="checkbox" value="cera"> CERA</label>
+                                      <label><input type="checkbox" value="parryware"> PARRYWARE</label>
+                                      <label><input type="checkbox" value="jaquar"> JAQUAR</label>
+                                      <label><input type="checkbox" value="kerovit"> KEROVIT</label>
+                                      <label><input type="checkbox" value="jr"> JR</label>
+                                      <label><input type="checkbox" value="silvertubes"> SILVER TUBES</label>
+                                      
+
+                                  </div>
+                              </div>
+                              
+
+                        
+                              
+                            
+                              
+                          </div>
+                          <input type="hidden" id="brands" name="brands">
+                          <div   id="brand" name="brands" style="margin-top: -20px;"  class="selected-items"></div>
+                    <label class="form-label"> Region</label>
+                    <div class="form-check" >
+                        <input value="Native" class="form-check-input" type="radio" name="region" id="nativeRegion" required>
+                        <label class="form-check-label" for="nativeRegion">
+                            Native
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input value="Saudi Arabia" class="form-check-input" type="radio" name="region" id="saudiArabiaRegion" required>
+                        <label class="form-check-label" for="saudiArabiaRegion">
+                            Saudi Arabia
+                        </label>
+                    </div>
+                    <div class="form-check">
+                      <input value="Both" class="form-check-input" type="radio" name="region" id="bothRegion" required>
+                      <label class="form-check-label" for="saudiArabiaRegion">
+                          Both
+                      </label>
+                  </div>
+          
+                    
+                        <div class="mb-4">
+                            <label class="form-label">Image</label>
+                            <input class="form-control" type="file" name="productpic">
+                        </div>
+                   
+                 
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit"  id="addButton" class="btn btn-primary">
+                    <span id="buttonText">Save</span>
+                    <div id="spinner" class="loader" style="display: none;">
+                      <!-- Insert your spinner's HTML here -->
+                    </div>
+                  </button>
+                </div>
+            </form>
+            
+              </div>
+            </div>
+           
+         
+          </div>
+              <!-- modal ends -->
+            
+            
+           
+              <div class="pagination-area mt-30 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                      
+                      <% if (currentpage > 1) { %>
+                      <li class="page-item"> <a class="page-link" href="?page=<%= currentpage - 1 %>&&categoryfilter=<%=category%>&&search=<%=searchterm%>"><i class="material-icons md-chevron_left"></i></a></li> 
+                      <% } %>
+                    
+                      <% for (let i = 1; i <= totalpages; i++) { %>
+                       <li class="page-item <%= i === currentpage ? 'active' : '' %>" > <a class="page-link" href="?page=<%= i %>&&categoryfilter=<%=category%>&&search=<%=searchterm%>"><%= i %></a></li>  
+                      <% } %>
+                    
+                      <% if (currentpage < totalpages) { %>
+                        <li class="page-item"> <a class="page-link" href="?page=<%= currentpage + 1 %>&&categoryfilter=<%=category%>&&search=<%=searchterm%>"><i class="material-icons md-chevron_right"></i></a></li>
+                      <% } %>
+                    </ul>  
+                </nav>
+            </div>
+            <% if (message) { %>
+              <% if (message === "deleted") { %>
+                <!-- Display animation for "deleted" -->
+                <div class="modal" id="lottieModal" tabindex="-1" role="dialog">
+                  <div class="modal-dialog" role="document">
+                <div class="modal-body">
+                  <div id="lottie-container-delete"></div>
+                </div>
+                </div>
+              </div>
+              <% } else { %>
+                <!-- Display default animation -->
+                <div class="modal" id="lottieModal" tabindex="-1" role="dialog">
+                  <div class="modal-dialog" role="document">
+                <div class="modal-body">
+                  <div id="lottie-container-edit"></div>
+                </div>
+                </div>
+              </div>
+              <% } %>
+            <% } %>
+        </section>
+    </main>
+    
+    <%- include("../layout/adminfooter.ejs") %>
+  
+
+    <script>
+            // JavaScript function to open the edit modal and fill fields
+            function openEditModal(name, description,productid,category,region,brand,categoryfilter,searchterm) {
+              // Fill modal fields with category details
+              console.log(searchterm);
+              document.getElementById('productname').value = name;
+              document.getElementById('description').value = description;
+              document.getElementById('productid').value= productid
+             
+              
+              const categorySelect = document.getElementById('categorySelect');
+           for (let i = 0; i < categorySelect.options.length; i++) {
+           if (categorySelect.options[i].value === category) {
+            categorySelect.options[i].selected = true;
+            break;
+        }
+    }
+            const nativeRegionRadio = document.getElementById('nativeRegion');
+            const saudiArabiaRegionRadio = document.getElementById('saudiArabiaRegion');
+            const bothRegionRadio = document.getElementById('bothRegion')
+
+            if (region === 'Native') {
+                nativeRegionRadio.checked = true;
+            } else if (region === 'Saudi Arabia') {
+                saudiArabiaRegionRadio.checked = true;
+            } else if(region==='Both'){
+                bothRegionRadio.checked= true;
+            }
+
+            }
+            
+          
+          </script>
+
+          <script>
+             $(document).ready(function () {
+              const lottieModal = $('#lottieModal');
+            const editanimationContainer = document.getElementById("lottie-container-edit");
+            const editanimation = bodymovin.loadAnimation({
+              container: editanimationContainer,
+              rendered:"svg",
+              loop:false,
+              autoplay:true,
+              path:"/animations/Animation - 1706622572822.json",
+           
+            })
+            editanimation.addEventListener("complete",function (){
+              lottieModal.modal("hide")
+            })
+             lottieModal.modal("show")
+          });
+        
+          </script>
+
+<script>
+    // Load LottieFiles animation
+    $(document).ready(function () {
+  const lottieModal = $('#lottieModal');
+    const deleteanimationContainer = document.getElementById('lottie-container-delete');
+    const deleteanimation = bodymovin.loadAnimation({
+      container: deleteanimationContainer,
+      renderer: 'svg',
+      loop: false,
+      autoplay: true,
+      path: '/animations/Animation - 1706727726479.json', // Replace with the path to your LottieFiles animation
+    });
+
+    deleteanimation.addEventListener('complete', function () {
+    // Animation has completed, hide the container
+    lottieModal.modal("hide")
+    deleteanimationContainer.style.display = 'none';
+
+  });
+  lottieModal.modal("show")
+  });
+
+  </script>
+
+   
+    
+    <script>
+        // Add click event listener to all delete category buttons
+        document.querySelectorAll('.delete-category-btn').forEach(button => {
+          button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const productID = this.getAttribute('data-id');
+            const categoryfilter=document.getElementById('categoryfilter').value;
+            const currentpage = document.getElementById("currentpage").value;
+            const search = document.getElementById("search").value
+            console.log(categoryfilter);
+            console.log(productID);
+            console.log(currentpage);
+            console.log(search);
+            // Show SweetAlert confirmation dialog
+            swal({
+              title: "Are you sure?",
+              text: "Once deleted, you can recover this product from database!",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+            })
+            .then((willDelete) => {
+              if (willDelete) {
+                // If user confirms deletion, redirect to deleteCategory route with categoryID parameter
+                window.location.href = `/admin/deleteproduct?productid=${productID}&&categoryfilter=${categoryfilter}&&currentpage=${currentpage}&&search=${search}`;
+              } else {
+                // If user cancels deletion, do nothing
+                return;
+              }
+            });
+          });
+        });
+        </script>
+        <script>
+            var exampleModal = document.getElementById('exampleModal')
+exampleModal.addEventListener('show.bs.modal', function (event) {
+  // Button that triggered the modal
+  var button = event.relatedTarget
+  // Extract info from data-bs-* attributes
+  var recipient = button.getAttribute('data-bs-whatever')
+  // If necessary, you could initiate an AJAX request here
+  // and then do the updating in a callback.
+  //
+  // Update the modal's content.
+  var modalTitle = exampleModal.querySelector('.modal-title')
+  var modalBodyInput = exampleModal.querySelector('.modal-body input')
+
+  modalTitle.textContent = "Edit product"
+  modalBodyInput.value = recipient
+})
+        </script>
+         <script>
+          document.getElementById('myForm').addEventListener('submit', function() {
+              // Show the spinner and hide the button text
+              document.getElementById('spinner').style.display = 'inline-block';
+              document.getElementById('buttonText').style.display = 'none';
+          });
+      </script>
+      <script>
+        
+    function toggleDropdown(event) {
+        document.getElementById("options").classList.toggle("show");
+        event.preventDefault();
+       
+    }
+   
+
+    window.addEventListener('click', function(event) {
+      const dropdownButton = document.querySelector('.dropdown button');
+      console.log(dropdownButton);
+    const dropdown = document.getElementById("options");
+    if (!event.target.matches('.dropdown button') && !dropdown.contains(event.target)) {
+        dropdown.classList.remove('show'); // Hide the dropdown list if the click is outside of it
+    }
+});
+
+      let brandarray=[];
+     
+    document.querySelectorAll('.dropdown-content input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {     
+            const text = this.value;
+            const selectedItems = document.querySelector('.selected-items');
+            console.log("heloo"+selectedItems);
+            const existingItem = selectedItems.querySelector(`[data-value="${text}"]`);
+             console.log("hellooo"+existingItem);
+            if (this.checked) {
+                if (!existingItem) {
+                  console.log("pre"+brandarray);
+                    brandarray.push(text);
+                    console.log("post"+brandarray);
+                    const selectedItem = document.createElement('div');
+                    selectedItem.setAttribute('data-value', text);
+                    selectedItem.innerText = text;
+                    selectedItems.appendChild(selectedItem);
+                }
+            } else {
+                if (existingItem) {
+                    existingItem.remove();
+                    const index = brandarray.indexOf(text);
+                    if (index > -1) {
+                        brandarray.splice(index, 1);
+                    }
+                }
+            }
+            console.log(brandarray);
+           
+            document.getElementById("brands").value=brandarray;
+            
+        });
+    });
+</script>
+      
+        
+   

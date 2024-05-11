@@ -1,0 +1,414 @@
+<%- include("../layout/adminheader.ejs") %>
+   <%- include("../layout/bars.ejs") %>
+   <style>
+    .loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #040404;
+  width: 25px;
+  height: 25px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+   </style>
+   <style>
+    .dropdown {
+        position: relative;
+        display: inline;
+        
+     
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #088178;
+        min-width: 200px;
+        overflow-y: auto;
+        max-height: 400px;
+        border: 1px solid #ddd;
+        z-index: 1;
+    }
+
+    .dropdown-content label {
+        display: block;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .dropdown-content label:hover {
+        background-color: #ddd;
+    }
+
+    .show {
+        display: block;
+    }
+
+    .selected-items {
+    display: flex;
+    max-width: 440px;
+    margin-top: 5px;
+    border-radius: 7px;
+    border: 1px solid #ccc;
+    overflow-x: auto;
+    color:white;
+    background-color: #088178;
+    justify-content: flex-start; /* Adjust justify-content property */
+    flex-wrap: wrap; /* Allow items to wrap */
+    gap: 5px; /* Add space between items */
+}
+
+    .selected-items div {
+        margin-bottom: 5px;
+    }
+</style>
+   <main class="main-wrap">
+    <header class="main-header navbar">
+      
+        <div class="col-nav col-11 ">
+            <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+            <ul class="nav position-relative">
+              
+                
+                    <div style="margin-top: 41px"  class="dropdown-menu position-absolute top-100 translate-middle " >
+                      
+                        <a class="dropdown-item text-muted" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                        
+                    </div>            
+
+                    <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/assets/imgs/items/13.avif" alt="User"></a>
+                   
+                    
+            </ul>
+        </div>
+    </header>
+   <section class="content-main">
+<form id="myForm" action="" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-6">
+            <div class="content-header">
+                <h2 class="content-title">Add New Product</h2> 
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6 style="width: 145px;">1. General info</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Product Name</label>
+                                <input name="name" type="text" placeholder="Type here" class="form-control" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Product Description</label>
+                                <textarea name="description" placeholder="Type here" class="form-control" rows="4" required></textarea>
+                            </div>
+                            <div class="mb-4"> 
+                                <label class="form-label">Product Category</label>
+                                <select name="category" class="form-select" required>
+                                    <option value="" selected disabled>Choose a category</option>
+                               <% for(let i=0;i<categories.length;i++){ %>
+                                   
+                                    <option value="<%=categories[i].name %>" ><%= categories[i].name %> </option>
+                                    <%}%>
+                                    </select>
+                                
+                              
+                                
+                            </div>
+                            <div style="display: flex; justify-content: space-between;" class="mb-4">
+                                <label class="form-label">Product Brand</label>
+                                <input type="hidden" id="selectedbrands" name="brands">
+                                <div class="dropdown">
+                                    <button style="border-radius: 7px; margin-right: 63px;" onclick="toggleDropdown(event)">Add Brands</button>
+                                    
+                                    <div id="options"  class="dropdown-content">
+                                        <label><input type="checkbox" value="tata"> TATA</label>
+                                        <label><input type="checkbox" value="appolo"> APPOLO</label>
+                                        <label><input type="checkbox" value="mark"> MARK</label>
+                                        <label><input type="checkbox" value="rks"> RKS</label>
+                                        <label><input type="checkbox" value="jsw"> JSW</label>
+                                        <label><input type="checkbox" value="georoof"> GEOROOF</label>
+                                        <label><input type="checkbox" value="oxy"> OXY</label>
+                                        <label><input type="checkbox" value="oraliumroofingsheet"> ORALIUM ROOFING SHEET</label>
+                                        <label><input type="checkbox" value="jindal"> JINDAL</label>
+                                        <label><input type="checkbox" value="aquastar"> AQUA STAR</label>
+                                        <label><input type="checkbox" value="euroguard"> EURO GUARD</label>
+                                        <label><input type="checkbox" value="vizag"> VIZAG</label>
+                                        <label><input type="checkbox" value="agni"> AGNI</label>
+                                        <label><input type="checkbox" value="kairali"> KAIRALI</label>
+                                        <label><input type="checkbox" value="metcon"> METCON</label>
+                                        <label><input type="checkbox" value="kenza"> KENZA</label>
+                                        <label><input type="checkbox" value="saibaba"> SAIBABA</label>
+                                        <label><input type="checkbox" value="cri"> CRI</label>
+                                        <label><input type="checkbox" value="crompton"> CROMPTON</label>
+                                        <label><input type="checkbox" value="kera"> KERA</label>
+                                        <label><input type="checkbox" value="krilosker"> KIRLOSKER</label>
+                                        <label><input type="checkbox" value="vguard"> V GUARD</label>
+                                        <label><input type="checkbox" value="frink"> FRINK</label>
+                                        <label><input type="checkbox" value="multisink"> MULTI SINK</label>
+                                        <label><input type="checkbox" value="prince"> PRINCE</label>
+                                        <label><input type="checkbox" value="mikitha"> MIKITHA</label>
+                                        <label><input type="checkbox" value="hitachi"> HITACHI</label>
+                                        <label><input type="checkbox" value="goldenbullet"> GOLDEN BULLET</label>
+                                        <label><input type="checkbox" value="bosch"> BOSCH</label>
+                                        <label><input type="checkbox" value="ferm"> FERM</label>
+                                        <label><input type="checkbox" value="dewalt"> DEWALT</label>
+                                        <label><input type="checkbox" value="asian"> ASIAN</label>
+                                        <label><input type="checkbox" value="indigo"> INDIGO</label>
+                                        <label><input type="checkbox" value="dulux"> DULUX</label>
+                                        <label><input type="checkbox" value="esdee"> ESDEE</label>
+                                        <label><input type="checkbox" value="amcos"> AMCOS</label>
+                                        <label><input type="checkbox" value="sheenlac"> SHEENLAC</label>
+                                        <label><input type="checkbox" value="century"> CENTURY</label>
+                                        <label><input type="checkbox" value="actiontesa"> ACTION TESA</label>
+                                        <label><input type="checkbox" value="greenply"> GREEN PLY</label>
+                                        <label><input type="checkbox" value="vanm"> VANM</label>
+                                        <label><input type="checkbox" value="thompsonply"> THOMPSON PLY</label>
+                                        <label><input type="checkbox" value="bestwood"> BEST WOOD</label>
+                                        <label><input type="checkbox" value="spider"> SPIDER</label>
+                                        <label><input type="checkbox" value="veneerply"> VENEER PLY</label>
+                                        <label><input type="checkbox" value="legrant"> LEGRANT</label>
+                                        <label><input type="checkbox" value="gm"> GM</label>
+                                        <label><input type="checkbox" value="elleys"> ELLEYS</label>
+                                        <label><input type="checkbox" value="polycab"> POLYCAB</label>
+                                        <label><input type="checkbox" value="havells"> HAVELLS</label>
+                                        <label><input type="checkbox" value="phinolex"> PHINOLEX</label>
+                                        <label><input type="checkbox" value="bajaj"> BAJAJ</label>
+                                        <label><input type="checkbox" value="surya"> SURYA</label>
+                                        <label><input type="checkbox" value="syska"> SYSKA</label>
+                                        <label><input type="checkbox" value="wipro"> WIPRO</label>
+                                        <label><input type="checkbox" value="osram"> OSRAM</label>
+                                        <label><input type="checkbox" value="philips"> PHILIPS</label>
+                                        <label><input type="checkbox" value="astral"> ASTRAL</label>
+                                        <label><input type="checkbox" value="supreme"> SUPREME</label>
+                                        <label><input type="checkbox" value="balco"> BALCO</label>
+                                        <label><input type="checkbox" value="hycount"> HYCOUNT</label>
+                                        <label><input type="checkbox" value="aquatech"> AQUATECH</label>
+                                        <label><input type="checkbox" value="goodwill"> GOODWILL</label>
+                                        <label><input type="checkbox" value="kelachandra"> KELACHANDRA</label>
+                                        <label><input type="checkbox" value="oceanpolymers"> OCEAN POLYMERS</label>
+                                        <label><input type="checkbox" value="jhonson"> JHONSON</label>
+                                        <label><input type="checkbox" value="cera"> CERA</label>
+                                        <label><input type="checkbox" value="parryware"> PARRYWARE</label>
+                                        <label><input type="checkbox" value="jaquar"> JAQUAR</label>
+                                        <label><input type="checkbox" value="kerovit"> KEROVIT</label>
+                                        <label><input type="checkbox" value="jr"> JR</label>
+                                        <label><input type="checkbox" value="silvertubes"> SILVER TUBES</label>
+                                        
+
+                                    </div>
+                                </div>
+                                
+
+                          
+                                
+                              
+                                
+                            </div>
+                            <div style="margin-top: -20px;"  class="selected-items"></div>
+                            <label class="form-label">Product Region</label>
+                            <div class="form-check">
+                                <input value="Native" class="form-check-input" type="radio" name="region" id="flexRadioDefault1" required>
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                  Native
+                                </label>
+                              </div>
+                              <div class="form-check">
+                                <input value="Saudi Arabia" class="form-check-input" type="radio" name="region" id="flexRadioDefault2" required>
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                  Saudi Arabia
+                                </label>
+                              </div>
+                              <div class="form-check">
+                                <input value="Both" class="form-check-input" type="radio" name="region" id="flexRadioDefault2" required>
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                  Both
+                                </label>
+                              </div>
+
+                        </div> <!-- col.// -->
+                    </div> <!-- row.// -->
+                     <!-- <hr class="mb-4 mt-0"> -->
+                    <!-- <div class="row">
+                        <div class="col-md-3">
+                            <h6>2. Pricing</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Cost in INR</label>
+                                <input name="price" type="number" placeholder="RS.00.0" class="form-control">
+                            </div>
+                        </div> 
+                    </div>   -->
+                    <!-- <hr class="mb-4 mt-0">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>3. Stock</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">No:of stocks</label>
+                                <input name="stock" type="number" placeholder="0" class="form-control">
+                            </div>
+                        </div>
+                    </div>  -->
+                    <!-- <hr class="mb-4 mt-0"> -->
+                    <!-- <div class="row">
+                        <div class="col-md-3">
+                            <h6 style="width: 145px;">4. Product type</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                              
+                                <label class="mb-2 form-check form-check-inline" style="width: 45%;">
+                                    <input  class="form-check-input" checked="" name="mycategory" type="radio">
+                                    <span class="form-check-label"> 
+                                       
+                                    </span>
+                                </label>
+                              
+                                
+                              
+                            </div>
+                        </div> 
+                    </div>  -->
+                    <!-- <hr class="mb-4 mt-0"> -->
+                    <div style="margin-top: 40px;" class="row">
+                        <div class="col-md-3">
+                            <h6>2. Media</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Product Image</label>
+                                <input class="form-control" type="file" name="productpic" required>
+                            </div>
+
+
+                        </div> <!-- col.// -->
+                        <% if (error) {%>
+                            <h6 style="color:red">OOPS! Duplicate product name encountered</h6>
+                        
+                            <%}%>
+                    </div> <!-- .row end// -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    <button type="submit"  id="addButton" class="btn btn-md rounded font-sm hover-up">
+        <span id="buttonText">Add</span>
+        <div id="spinner" class="loader" style="display: none;">
+          <!-- Insert your spinner's HTML here -->
+        </div>
+      </button>
+      
+</form>
+
+<div>
+
+</div>
+
+
+<% if (message) { %>
+<!-- Show LottieFiles animation when message is true -->
+<div class="modal" id="lottieModal" tabindex="-1" role="dialog">
+<div class="modal-dialog" role="document">
+<div class="modal-body">
+<div id="lottie-container-add"></div>
+</div>
+</div>
+</div>
+
+<% } %>
+</section>
+<script>
+     $(document).ready(function () {
+              const lottieModal = $('#lottieModal');
+            const addanimationContainer = document.getElementById("lottie-container-add");
+            const addanimation = bodymovin.loadAnimation({
+              container: addanimationContainer,
+              rendered:"svg",
+              loop:false,
+              autoplay:true,
+              path:"/animations/Animation - 1706622572822.json",
+           
+            })
+            addanimation.addEventListener("complete",function (){
+              lottieModal.modal("hide")
+            })
+             lottieModal.modal("show")
+          });
+</script>
+<script>
+    document.getElementById('myForm').addEventListener('submit', function() {
+        // Show the spinner and hide the button text
+        document.getElementById('spinner').style.display = 'inline-block';
+        document.getElementById('buttonText').style.display = 'none';
+    });
+</script>
+
+<script>
+    function toggleDropdown(event) {
+        document.getElementById("options").classList.toggle("show");
+        event.preventDefault();
+       
+    }
+   
+
+    window.addEventListener('click', function(event) {
+    const dropdown = document.getElementById("options");
+    if (!event.target.matches('.dropdown button') && !dropdown.contains(event.target)) {
+        dropdown.classList.remove('show'); // Hide the dropdown list if the click is outside of it
+    }
+});
+
+      let brandarray=[];
+    document.querySelectorAll('.dropdown-content input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {     
+            const text = this.value;
+            const selectedItems = document.querySelector('.selected-items');
+            console.log("heloo"+selectedItems);
+            const existingItem = selectedItems.querySelector(`[data-value="${text}"]`);
+             console.log("hellooo"+existingItem);
+            if (this.checked) {
+                if (!existingItem) {
+                    brandarray.push(text);
+                    console.log(brandarray);
+                    const selectedItem = document.createElement('div');
+                    selectedItem.setAttribute('data-value', text);
+                    selectedItem.innerText = text;
+                    selectedItems.appendChild(selectedItem);
+                }
+            } else {
+                if (existingItem) {
+                    existingItem.remove();
+                    const index = brandarray.indexOf(text);
+                    if (index > -1) {
+                        brandarray.splice(index, 1);
+                    }
+                }
+            }
+            document.getElementById("selectedbrands").value=brandarray;
+            
+        });
+    });
+</script>
+    
+
+
+<%- include("../layout/adminfooter.ejs") %>
+

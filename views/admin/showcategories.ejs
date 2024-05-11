@@ -1,0 +1,283 @@
+    
+    <%- include("../layout/adminheader.ejs") %>
+    <%- include("../layout/bars.ejs") %>
+    <style>
+      .loader {
+      border: 16px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 16px solid #040404;
+      width: 25px;
+      height: 25px;
+      animation: spin 2s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    </style>
+    
+
+    <main class="main-wrap">
+        <header class="main-header navbar "> 
+            <div class="col-nav col-11 ">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <ul class="nav position-relative">
+                  
+                    
+                        <div style="margin-top: 41px"  class="dropdown-menu position-absolute top-100 translate-middle " >
+                          
+                            <a class="dropdown-item text-muted" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            
+                        </div>            
+    
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/assets/imgs/items/13.avif" alt="User"></a>
+                       
+                        
+                </ul>
+            </div>
+        </header>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Categories </h2>
+                    <p>Add, edit or delete a category</p>
+                </div>
+                <!-- <form >
+                    <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term" name="search">
+                        <input class="btn btn-primary" type="submit" value="search"> 
+                    </div>
+                   
+                </form> -->
+            </div>
+            <div class="card ">
+                <div class="card-body ">
+                    <div class="row col-12">  
+                                <div>
+                                <table class=" table table-hover table-borderless">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">NO:</th>
+                                        <th scope="col">NAME</th>
+                                        <th scope="col">IMAGES</th>
+                                        <th scope="col">EDIT</th>
+                                        <th scope="col">DELETE</th>
+                                      </tr>
+                                    </thead>
+                                    <% if(categories.length>0){
+                                      let currentindex = (currentpage-1)*item_per_page+1
+                                 
+                                        for(let i=0;i<categories.length;i++){ %>
+                                         
+                                      <tbody>
+                                      <tr>
+                                        <th scope="row"><%= currentindex %></th>
+                                        <td ><%= categories[i].name %></td>
+                                        <input type="hidden" value="<%= currentpage %>" class="form-control" name="currentpage" id="currentpage" >
+                                        <td><img style="height: 50px; width: 50px;" src="<%= categories[i].image %>"></td>
+                                        <td><a class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openEditModal('<%= categories[i].name %>','<%=categories[i].description %>','<%=categories[i]._id %>')">edit</a></td>
+                                        <td><a data-id="<%= categories[i]._id %>" style="background-color: brown;" class="btn btn-primary delete-category-btn">delete</a></td>
+                                      </tr>
+                                    </tbody> 
+                                    
+                                    <%
+                                    currentindex++
+                                }
+                                } else{ %>
+                                    <tr>
+                                        <td colspan="5"><h3 style=" margin-top:50px;display:flex;justify-content: center;align-items: center;">categories not found </h3></td>
+                                    </tr>
+                               <% }
+                               %>
+                                  </table>
+                                </div>
+
+                    </div>
+                   
+            </div>
+            
+            </div>
+            <div class="pagination-area mt-30 mb-50">
+              <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-center">
+                    <% if (currentpage > 1) { %>
+                    <li class="page-item"> <a class="page-link" href="/admin/showcategory?page=<%= currentpage - 1 %>"><i class="material-icons md-chevron_left"></i></a></li> 
+                    <% } %>
+                  
+                    <% for (let i = 1; i <= totalpages; i++) { %>
+                     <li class="page-item <%= i === currentpage ? 'active' : '' %>" > <a class="page-link" href="/admin/showcategory?page=<%= i %>"><%= i %></a></li>  
+                    <% } %>
+                  
+                    <% if (currentpage < totalpages) { %>
+                      <li class="page-item"> <a class="page-link" href="/admin/showcategory?page=<%= currentpage + 1 %>"><i class="material-icons md-chevron_right"></i></a></li>
+                    <% } %>
+                  </ul>  
+              </nav>
+          </div>
+            <% if (message) { %>
+              <% if (message === "deleted") { %>
+                <!-- Display animation for "deleted" -->
+                <div class="modal" id="lottieModal" tabindex="-1" role="dialog">
+                  <div class="modal-dialog" role="document">
+                <div class="modal-body">
+                  <div id="lottie-container-delete"></div>
+                </div>
+                </div>
+              </div>
+              <% } else { %>
+                <!-- Display default animation -->
+                <div class="modal" id="lottieModal" tabindex="-1" role="dialog">
+                  <div class="modal-dialog" role="document">
+                <div class="modal-body">
+                  <div id="lottie-container-edit"></div>
+                </div>
+                </div>
+              </div>
+              <% } %>
+            <% } %>
+                 
+        </section>
+        <div class="modal fade  modal-dialogue-centered" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialogue-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Edit category</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form id="myForm" action="/admin/editcategory?currentpage=<%=currentpage%>" method="post" enctype="multipart/form-data">
+                    <input type="hidden" class="form-control" name="categoryid" id="categoryid" >
+                    <div class="mb-4">
+                      <label for="recipient-name" class="form-label">Name</label>
+                      <input type="text" class="form-control" name="categoryname" id="categoryname">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Description</label>
+                        <textarea id="description" name="description" type="text" placeholder="Type here" class="form-control"></textarea>
+                    </div>
+          
+                    
+                        <div class="mb-4">
+                            <label class="form-label">Image</label>
+                            <input class="form-control" type="file" name="categorypic">
+                        </div>
+                   
+                 
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit"  id="addButton" class="btn btn-primary">
+                    <span id="buttonText">Save</span>
+                    <div id="spinner" class="loader" style="display: none;">
+                      <!-- Insert your spinner's HTML here -->
+                    </div>
+                  </button>
+                </div>
+            </form>
+            
+              </div>
+            </div>
+           
+         
+          </div>
+          
+  
+    </main>
+    <script>
+        // Add click event listener to all delete category buttons
+        document.querySelectorAll('.delete-category-btn').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const categoryID = this.getAttribute('data-id');
+            console.log(categoryID);
+           const currentpage= document.getElementById("currentpage").value;
+              console.log(currentpage);
+            // Show SweetAlert confirmation dialog
+            swal({
+            title: "Are you sure?",
+            text: "Once deleted, you can recover this category from database!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+            })
+            .then((willDelete) => {
+            if (willDelete) {
+                // If user confirms deletion, redirect to deleteCategory route with categoryID parameter
+                window.location.href = `/admin/deletecategory?categoryid=${categoryID}&&currentpage=${currentpage}`;
+            } else {
+                // If user cancels deletion, do nothing
+                return;
+            }
+            });
+        });
+        });
+        </script>
+        <script>
+            // JavaScript function to open the edit modal and fill fields
+            function openEditModal(name, description,categoryid) {
+              // Fill modal fields with category details
+              console.log(categoryid);
+              document.getElementById('categoryname').value = name;
+              document.getElementById('description').value = description;
+              document.getElementById('categoryid').value= categoryid
+
+            }
+          
+          </script>
+          <script>
+             $(document).ready(function () {
+              const lottieModal = $('#lottieModal');
+            const editanimationContainer = document.getElementById("lottie-container-edit");
+            const editanimation = bodymovin.loadAnimation({
+              container: editanimationContainer,
+              rendered:"svg",
+              loop:false,
+              autoplay:true,
+              path:"/animations/Animation - 1706622572822.json",
+           
+            })
+            editanimation.addEventListener("complete",function (){
+              lottieModal.modal("hide")
+            })
+             lottieModal.modal("show")
+          });
+        
+          </script>
+            <script>
+                // Load LottieFiles animation
+                $(document).ready(function () {
+              const lottieModal = $('#lottieModal');
+                const deleteanimationContainer = document.getElementById('lottie-container-delete');
+                const deleteanimation = bodymovin.loadAnimation({
+                  container: deleteanimationContainer,
+                  renderer: 'svg',
+                  loop: false,
+                  autoplay: true,
+                  path: '/animations/Animation - 1706727726479.json', // Replace with the path to your LottieFiles animation
+                });
+
+                deleteanimation.addEventListener('complete', function () {
+                // Animation has completed, hide the container
+                lottieModal.modal("hide")
+                deleteanimationContainer.style.display = 'none';
+
+              });
+              lottieModal.modal("show")
+              });
+
+              </script>
+               <script>
+        document.getElementById('myForm').addEventListener('submit', function() {
+            // Show the spinner and hide the button text
+            document.getElementById('spinner').style.display = 'inline-block';
+            document.getElementById('buttonText').style.display = 'none';
+        });
+    </script>
+              
+               
+
+   
+   
+    <%- include("../layout/adminfooter.ejs") %>
