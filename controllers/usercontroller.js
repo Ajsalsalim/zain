@@ -101,10 +101,12 @@ const sendgmail = async(req,res)=>{
 }
 
 const aboutpageload = async(req,res)=>{
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
     res.render("About",{currentpage:"about"})
 }
 
 const contactpageload = async(req,res)=>{
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
     res.render("Contact",{currentpage:"contact",success:false})
 }
 module.exports={
