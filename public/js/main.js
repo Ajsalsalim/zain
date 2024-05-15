@@ -133,6 +133,7 @@
     [ Isotope ]*/
     
     $(document).ready(function () {
+        console.log("nadakkilla");
         var categoryName = document.getElementById("categoryname").value;
         var $topeContainer = $('.isotope-grid');
         var $filter = $('.filter-tope-group');
@@ -285,7 +286,7 @@
            
         });
     
-   
+        paginateProducts();
         $(window).on('load', function () {
             console.log("inititafj");
             if (categoryName) {
@@ -296,8 +297,9 @@
                 }
             }
     
-            paginateProducts();
+            
         });
+        
     });
     
     
