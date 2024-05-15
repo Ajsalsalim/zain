@@ -2,6 +2,9 @@
 (function ($) {
     "use strict";
 
+
+    console.log("vallom nadakko")
+
     /*[ Load page ]
     ===========================================================*/
     $(".animsition").animsition({
