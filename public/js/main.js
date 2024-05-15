@@ -473,6 +473,7 @@
 });
 
     $('.js-hide-modal1').on('click',function(){
+        console.log("hello")
         setTimeout(()=>{
             $('#productimage').attr('src', '');
 
