@@ -3,7 +3,7 @@ const product = require("../Models/productmodel");
 const nodemailer = require('nodemailer');
 const {generateWhatsAppLink} = require("./helpers/userhelpers");
 const homepageload = async(req,res)=>{
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+   
     const categories = await category.find({isDeleted:false});
 
     
@@ -12,7 +12,7 @@ const homepageload = async(req,res)=>{
 
 } 
 const productpageload = async(req,res)=>{
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+    
     const categoryname = req.query.categoryname|| false;
     const categories = await category.find({isDeleted:false});
    
@@ -102,12 +102,12 @@ const sendgmail = async(req,res)=>{
 }
 
 const aboutpageload = async(req,res)=>{
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+   
     res.render("About",{currentpage:"about"})
 }
 
 const contactpageload = async(req,res)=>{
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+   
     res.render("Contact",{currentpage:"contact",success:false})
 }
 module.exports={
