@@ -3,6 +3,7 @@ const product = require("../Models/productmodel");
 const nodemailer = require('nodemailer');
 const {generateWhatsAppLink} = require("./helpers/userhelpers");
 const homepageload = async(req,res)=>{
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
     const categories = await category.find({isDeleted:false});
 
     
