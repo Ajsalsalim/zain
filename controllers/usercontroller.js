@@ -11,6 +11,7 @@ const homepageload = async(req,res)=>{
 
 } 
 const productpageload = async(req,res)=>{
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
     const categoryname = req.query.categoryname|| false;
     const categories = await category.find({isDeleted:false});
    
