@@ -286,8 +286,8 @@
            
         });
     
-        paginateProducts();
-        $(window).on('load', function () {
+        
+        
             console.log("inititafj");
             if (categoryName) {
                 console.log(categoryName);
@@ -296,9 +296,11 @@
                     $categoryButton.trigger('click');
                 }
             }
+
+            paginateProducts();
     
             
-        });
+        
         
     });
     
