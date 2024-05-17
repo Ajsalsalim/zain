@@ -721,7 +721,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 }
 
 /*---------------------------------------------*/
-@media (max-width: 500px){
+@media (max-width: 700px){
   .wrap-header-mobile {
     display: -webkit-box;
     display: -webkit-flex;
@@ -1252,7 +1252,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   height: 100vh;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 700px) {
   .bannerdemo {
     height: calc(100vh - 80px) !important;
     /* margin-right: -50px; */
@@ -1262,7 +1262,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
    
   }
 }
-@media (max-width: 500px) {
+@media (max-width: 700px) {
   .bannerdemo1 {
     height: calc(100vh - 80px) !important;
     background-image: url(../images/tmtbarbannerportraitbg.png);  
@@ -1270,7 +1270,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
    
   }
 }
-@media (max-width: 500px) {
+@media (max-width: 700px) {
   .bannerdemo2 {
     height: calc(100vh - 80px) !important;
     background-image: url(../images/roofingmaterialsv2bannerportraitbg.png);  
