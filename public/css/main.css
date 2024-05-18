@@ -696,6 +696,28 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   bottom: 0;
   margin: auto;
 }
+/* For mobile devices */
+@media only screen and (max-width: 350px) {
+  .isotope-item {
+    width: 100%; /* Show 1 product per row */
+  }
+}
+
+/* For tablets */
+@media only screen and (min-width: 350px) and (max-width: 650px) {
+  .isotope-item {
+    width: 33.33%; 
+  }
+}
+
+/* For desktop */
+@media only screen and (min-width: 650px) {
+  .isotope-item {
+    width: 20%; 
+  }
+}
+
+
 
 
 
